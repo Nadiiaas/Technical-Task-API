@@ -1,0 +1,19 @@
+{
+  "name": "api-automation",
+  "version": "1.0.0",
+  "description": "Technical task - API test automation",
+  "private": true,
+  "scripts": {
+    "test": "cypress run --spec \"cypress/e2e/apiTask.cy.js\""
+  },
+  "keywords": [
+    "cypress",
+    "api-testing",
+    "automation"
+  ],
+  "author": "Candidate",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.6.0"
+  }
+}
