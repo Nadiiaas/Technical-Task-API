@@ -1,50 +1,59 @@
 ## Installation
 
-1. Install project dependencies:
-   ```bash
-   npm install
-   ```
+Use the package manager npm to install all needed dependencies.
 
-## Running Tests (Cypress)
+```bash
+npm install
+```
 
-To execute the automated test scenarios from the command line:
+## Usage
+
+For test data, the JSON fixture should be imported.
+
+```javascript
+const usersData = require("../fixtures/users.json");
+```
+
+Cypress relies on global describe for defining tests, so no additional Test classes or imports are required.
+
+All assertions use Cypress’s built-in Chai assertion library, which makes the expect function available globally—no custom helpers or extra imports are needed.
+
+```javascript
+expect(response.status).to.eq(200);
+```
+
+## Template of the test file
+
+```javascript
+const usersData = require("../fixtures/users.json");
+
+describe("API Task", () => {
+  // GET Scenario
+  it("GET - List Users", () => {
+    cy.request("GET", "/api/users?page=2").then((response) => {
+      // assert status
+      expect(response.status).to.eq(200);
+      // verify results
+      expect(response.body).to.have.property("total");
+    });
+  });
+
+  // POST Scenario (Data Driven)
+  usersData.forEach((user) => {
+    it(`POST - Create User: ${user.name}`, () => {
+      cy.request("POST", "/api/users", user).then((response) => {
+        // assert status
+        expect(response.status).to.eq(201);
+      });
+    });
+  });
+});
+```
+
+## Run from command line
+
+To run tests from command line the following command should be used:
 
 ```bash
 npm run test
-```
-
-This command will:
-
-1. Run Cypress in headless mode.
-2. Execute the specific test suite: `cypress/e2e/apiTask.cy.js`.
-3. Output the results to your terminal.
-
-## Running Tests (Postman)
-
-A Postman collection is included for manual verification if required.
-
-1. Open Postman.
-2. Import `moxymind_task.postman_collection.json`.
-3. Run the collection via the "Runner" tab or send individual requests.
-4. Check the "Test Results" tab for pass/fail status.
-
-## Project Structure
-
-- **Test Logic**: `cypress/e2e/apiTask.cy.js` (Contains GET and POST scenarios)
-- **Test Data**: `cypress/fixtures/users.json` (Data for Data-Driven tests)
-- **Postman**: `moxymind_task.postman_collection.json` (Alternative manual tests)
-- **Configuration**: `cypress.config.js` (Base URL setup)
-
-## Running Tests
-
-Run all tests:
-
-```bash
-npx cypress run
-```
-
-Open Cypress UI:
-
-```bash
-npx cypress open
 ```
