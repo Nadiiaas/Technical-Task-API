@@ -1,108 +1,39 @@
 ## Installation
 
-Use the package manager npm to install all needed dependencies
+1. Install project dependencies:
+   ```bash
+   npm install
+   ```
+
+## Running Tests (Cypress)
+
+To execute the automated test scenarios from the command line:
 
 ```bash
-npm install
+npm run test
 ```
 
-## Usage
+This command will:
 
-### Importing Test Data
+1. Run Cypress in headless mode.
+2. Execute the specific test suite: `cypress/e2e/apiTask.cy.js`.
+3. Output the results to your terminal.
 
-Load test data from JSON fixtures for data-driven tests
+## Running Tests (Postman)
 
-```javascript
-const usersData = require("../fixtures/users.json");
-```
+A Postman collection is included for manual verification if required.
 
-### API Requests
+1. Open Postman.
+2. Import `moxymind_task.postman_collection.json`.
+3. Run the collection via the "Runner" tab or send individual requests.
+4. Check the "Test Results" tab for pass/fail status.
 
-```javascript
-cy.request("METHOD", "URL");
-```
+## Project Structure
 
-### Assertions
-
-Verify API responses using Chai assertions
-
-```javascript
-expect(response.status).to.eq(200);
-expect(response.body).to.have.property("id");
-expect(response.body.name).to.eq("Lawson");
-```
-
-### Data-Driven Tests
-
-Loop through test data to run the same test with different inputs
-
-```javascript
-usersData.forEach((user) => {
-  it(`Test with ${user.name}`, () => {
-    cy.request("POST", "/api/users", user);
-  });
-});
-```
-
-## Test File Template
-
-```javascript
-// Import test data
-const usersData = require("../fixtures/users.json");
-
-describe("Task", () => {
-  // Test Case 1: GET Request
-  it("GET - List Users (Page 2)", () => {
-    cy.request("GET", "/api/users?page=2").then((response) => {
-      // Verify status code
-      expect(response.status).to.eq(200);
-
-      // Check response structure
-      expect(response.body).to.have.property("total");
-      expect(response.body.data[0].last_name).to.eq("Lawson");
-      expect(response.body.data[1].last_name).to.eq("Ferguson");
-
-      // Verify user count
-      const receivedCount = response.body.data.length;
-      const totalCount = response.body.total;
-
-      cy.log(`Users on page: ${receivedCount}, Total users: ${totalCount}`);
-      expect(receivedCount).to.be.lte(totalCount);
-
-      // Check data types
-      expect(response.body.page).to.be.a("number");
-      expect(response.body.data).to.be.an("array");
-    });
-  });
-
-  // Test Case 2: POST Request (Data Driven)
-  usersData.forEach((user) => {
-    it(`POST - Create User: ${user.name}`, () => {
-      const timeLimit = 500;
-
-      cy.request("POST", "/api/users", user).then((response) => {
-        // Verify status code
-        expect(response.status).to.eq(201);
-
-        // Check required fields
-        expect(response.body).to.have.property("id");
-        expect(response.body).to.have.property("createdAt");
-
-        // Verify data matches request
-        expect(response.body.name).to.eq(user.name);
-        expect(response.body.job).to.eq(user.job);
-
-        // Check response time
-        expect(response.duration).to.be.lessThan(timeLimit);
-
-        // Verify data types
-        expect(response.body.id).to.be.a("string");
-        expect(response.body.createdAt).to.be.a("string");
-      });
-    });
-  });
-});
-```
+- **Test Logic**: `cypress/e2e/apiTask.cy.js` (Contains GET and POST scenarios)
+- **Test Data**: `cypress/fixtures/users.json` (Data for Data-Driven tests)
+- **Postman**: `moxymind_task.postman_collection.json` (Alternative manual tests)
+- **Configuration**: `cypress.config.js` (Base URL setup)
 
 ## Running Tests
 
